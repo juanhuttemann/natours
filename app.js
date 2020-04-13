@@ -5,12 +5,18 @@ const app = express();
 
 app.use(express.json());
 
+app.use((req, res, next) => {
+  req.requestTime = new Date().toISOString();
+  next();
+});
+
 const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`)
 );
 
 const getAllTours = (req, res) => {
   res.status(200).json({
+    requestedAt: req.requestTime,
     status: "success",
     results: tours.length,
     data: {
@@ -84,14 +90,13 @@ const deleteTour = (req, res) => {
   });
 };
 
-app.route("/api/v1/tours")
-        .get(getAllTours)
-        .post(createTour)
+app.route("/api/v1/tours").get(getAllTours).post(createTour);
 
-app.route("/api/v1/tours/:id")
-        .get(getTour)
-        .patch(updateTour)
-      .delete(deleteTour);
+app
+  .route("/api/v1/tours/:id")
+  .get(getTour)
+  .patch(updateTour)
+  .delete(deleteTour);
 
 const port = 3000;
 app.listen(port, () => {
