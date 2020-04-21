@@ -1,5 +1,14 @@
 const Tour = require("../models/tourModel");
 
+exports.aliasTopTours = (req, res, next) => {
+  req.query.limit = "5";
+  req.query.sort = "-ratingsAverage,price";
+  req.query.fields = "name,price,ratingsAverage,summary,difficulty";
+  next();
+};
+
+
+
 exports.getAllTours = async (req, res) => {
   try {
     const queryObj = { ...req.query };
@@ -36,7 +45,7 @@ exports.getAllTours = async (req, res) => {
 
     if (req.query.page) {
       const toursAmount = await Tour.countDocuments();
-      if (skip >= toursAmount) throw new Error('this page does not exists')
+      if (skip >= toursAmount) throw new Error("this page does not exists");
     }
 
     //RUN QUERY
