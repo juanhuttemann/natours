@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const slugify = require("slugify");
 
 const tourSchema = new mongoose.Schema(
   {
@@ -6,6 +7,9 @@ const tourSchema = new mongoose.Schema(
       type: String,
       require: [true, "A tour must have a name"],
       unique: true,
+    },
+    slug: {
+      type: String,
     },
     duration: {
       type: Number,
